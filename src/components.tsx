@@ -79,28 +79,32 @@ export const PoolContainer: React.SFC<{}> = () => {
     () => {
       const keyHandler = evt => {
         console.log(evt.which, selectedIndex)
-        // let newIndex = selectedIndex
+        let newIndex = selectedIndex
         switch (evt.which) {
           // right arrow
           case 39: {
-            setSelectedIndex(selectedIndex + 1)
+            newIndex = selectedIndex + 1
             break
           }
           // left arrow
           case 37: {
-            setSelectedIndex(selectedIndex - 1)
+            newIndex = selectedIndex - 1
             break
           }
           // down arrow
           case 38: {
-            setSelectedIndex(selectedIndex - 5)
+            newIndex = selectedIndex - 5
             break
           }
           // up arrow
           case 40: {
-            setSelectedIndex(selectedIndex + 5)
+            newIndex = selectedIndex + 5
             break
           }
+        }
+
+        if (newIndex !== selectedIndex) {
+          setSelectedIndex(newIndex)
         }
       }
       window.addEventListener('keydown', keyHandler)

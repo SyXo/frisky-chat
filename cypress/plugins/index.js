@@ -64,6 +64,6 @@ module.exports = (on, config) => {
 
     client.connect('ws://localhost:35729/livereload')
 
-    // return file.filePath
+    return file.filePath
   })
 }

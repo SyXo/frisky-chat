@@ -24,7 +24,12 @@ context('Keyboard Selection', () => {
   })
 
   it('selects images with keyboard', () => {
-    cy.get('div[src]')
-    cy.get('body').type('{downarrow}{rightarrow} {rightarrow}{rightarrow}')
+    cy.get('div[src]').should('have.length', 15)
+    cy.get('body').type('{rightarrow}{rightarrow}{downarrow}', { delay: 100 })
+    cy.get('div[src]:nth-child(8)').should(
+      'have.css',
+      'outline',
+      'rgb(255, 255, 255) solid 2px',
+    )
   })
 })
