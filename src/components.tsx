@@ -102,7 +102,11 @@ export const PoolContainer: React.SFC<{}> = () => {
             break
           }
         }
-
+        if (newIndex < 0) {
+          newIndex += poolImages.length
+        } else if (newIndex >= poolImages.length) {
+          newIndex -= poolImages.length
+        }
         if (newIndex !== selectedIndex) {
           setSelectedIndex(newIndex)
         }
