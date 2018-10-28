@@ -18,18 +18,14 @@ module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   on('file:preprocessor', file => {
-    console.log('AAAAAAAA', file)
     const client = new WebSocketClient()
-    // 'echo-protocol',
-    // 'http://livereload.com/protocols/official-7',
-    console.log('YIKES', client)
 
     const refresh = _.debounce(() => {
       file.emit('rerun')
     })
 
     client.on('connectFailed', error => {
-      console.log('Connect Error: ' + error.toString())
+      console.error('Connect Error: ' + error.toString())
     })
 
     client.on('connect', connection => {
@@ -38,7 +34,6 @@ module.exports = (on, config) => {
       )
 
       connection.on('message', message => {
-        console.log('message!', message)
         const res = JSON.parse(message.utf8Data)
 
         if (res.command === 'hello') {
@@ -69,17 +64,6 @@ module.exports = (on, config) => {
 
     client.connect('ws://localhost:35729/livereload')
 
-    // client.onopen = () => {
-    //   console.log('ready!')
-    // }
-
-    // client.onerror = err => {
-    //   console.log('oops', err)
-    // }
-
-    // client.onmessage = evt => {
-    //   console.log('OOOOOO', evt)
-    // }
-    return file.filePath
+    // return file.filePath
   })
 }
