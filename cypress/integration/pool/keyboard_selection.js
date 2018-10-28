@@ -1,3 +1,5 @@
+const delay = 250
+
 context('Keyboard Selection', () => {
   let polyfill
 
@@ -25,8 +27,8 @@ context('Keyboard Selection', () => {
 
   it('selects and views images with keyboard', () => {
     cy.get('#root > div > div').should('have.length', 15)
-    cy.wait(500)
-    cy.get('body').type('{rightarrow}{rightarrow}{downarrow}', { delay: 250 })
+    cy.wait(delay)
+    cy.get('body').type('{rightarrow}{rightarrow}{downarrow}', { delay })
     cy.get('#root > div > div:nth-child(8)')
       .should('have.css', 'outline', 'rgb(255, 255, 255) solid 2px')
       .should(
@@ -34,16 +36,16 @@ context('Keyboard Selection', () => {
         'background-image',
         'url("http://localhost:8080/cypress/fixtures/images/7.jpg")',
       )
-    cy.get('body').type(' ', { delay: 250 })
+    cy.get('body').type(' ', { delay })
     cy.get('#root > div > div').should('have.length', 0)
     cy.get('#root > div').should(
       'have.css',
       'background-image',
       'url("http://localhost:8080/cypress/fixtures/images/7.jpg")',
     )
-    cy.get('body').type(' ', { delay: 250 })
+    cy.get('body').type(' ', { delay })
     cy.get('#root > div > div').should('have.length', 15)
-    cy.get('body').type('{uparrow} ', { delay: 250 })
+    cy.get('body').type('{uparrow} ', { delay })
     cy.wait(500)
     cy.get('#root > div > div').should('have.length', 0)
     cy.get('#root > div').should(
@@ -51,13 +53,13 @@ context('Keyboard Selection', () => {
       'background-image',
       'url("http://localhost:8080/cypress/fixtures/images/2.jpg")',
     )
-    cy.get('body').type('{leftarrow}', { delay: 250 })
+    cy.get('body').type('{leftarrow}', { delay })
     cy.get('#root > div').should(
       'have.css',
       'background-image',
       'url("http://localhost:8080/cypress/fixtures/images/1.jpg")',
     )
-    cy.get('body').type('{uparrow}', { delay: 250 })
+    cy.get('body').type('{uparrow}', { delay })
     cy.get('#root > div').should(
       'have.css',
       'background-image',
