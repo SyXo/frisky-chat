@@ -1,6 +1,5 @@
 import * as React from 'react'
-// @ts-ignore
-const { useState, useEffect } = React
+const { useState, useEffect, useRef } = React
 import styled, { css, createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
@@ -36,6 +35,7 @@ interface Image {
 interface Pool {
   images: Image[]
   selectedIndex: number
+  clickOpenHandler: (index: number) => () => void
 }
 
 export const PoolView = styled.div`
@@ -47,7 +47,11 @@ export const PoolView = styled.div`
   align-content: flex-start;
 `
 
-export const PoolComponent: React.SFC<Pool> = ({ images, selectedIndex }) => (
+export const PoolComponent: React.SFC<Pool> = ({
+  images,
+  selectedIndex,
+  clickOpenHandler,
+}) => (
   <PoolView>
     {images.map(({ src }, i) => (
       <Thumbnail
@@ -55,6 +59,7 @@ export const PoolComponent: React.SFC<Pool> = ({ images, selectedIndex }) => (
         url={src}
         selected={selectedIndex === i}
         visible={true}
+        onClick={clickOpenHandler(i)}
       />
     ))}
   </PoolView>
@@ -156,7 +161,19 @@ export const PoolContainer: React.SFC<RouteProps> = ({
     [loaded, selectedIndex],
   )
 
-  return <PoolComponent images={poolImages} selectedIndex={selectedIndex} />
+  const clickOpenHandler = index => () => {
+    setSelectedIndex(index)
+    setID(index.toString())
+    setRoute('image')
+  }
+
+  return (
+    <PoolComponent
+      images={poolImages}
+      selectedIndex={selectedIndex}
+      clickOpenHandler={clickOpenHandler}
+    />
+  )
 }
 
 interface FullscreenImageProps {
@@ -198,5 +215,15 @@ export const ImageContainer: React.SFC<ImageContainerProps & RouteProps> = ({
       window.removeEventListener('keydown', keyHandler)
     }
   })
-  return <FullscreenImage url={`cypress/fixtures/images/${id}.jpg`} />
+
+  const clickCloseHandler = () => {
+    setRoute('pool')
+  }
+
+  return (
+    <FullscreenImage
+      onClick={clickCloseHandler}
+      url={`cypress/fixtures/images/${id}.jpg`}
+    />
+  )
 }

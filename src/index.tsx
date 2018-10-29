@@ -1,8 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-// @ts-ignore
-const { useState, useEffect } = React
+const { useState } = React
 
 import {
   GlobalStyle,

@@ -1,6 +1,6 @@
 const delay = 250
 
-context('Keyboard Selection', () => {
+context('Selection', () => {
   let polyfill
 
   before(() => {
@@ -64,6 +64,27 @@ context('Keyboard Selection', () => {
       'have.css',
       'background-image',
       'url("http://localhost:8080/cypress/fixtures/images/11.jpg")',
+    )
+    cy.get('body').type(' ', { delay })
+  })
+
+  it('selects views images with click', () => {
+    cy.get('#root > div > div:nth-child(5)').click({ delay })
+    cy.get('#root > div').should(
+      'have.css',
+      'background-image',
+      'url("http://localhost:8080/cypress/fixtures/images/4.jpg")',
+    )
+    cy.get('#root > div').click({ delay })
+    cy.get('#root > div').should(
+      'not.have.css',
+      'background-image',
+      'url("http://localhost:8080/cypress/fixtures/images/4.jpg")',
+    )
+    cy.get('#root > div > div:nth-child(5)').should(
+      'have.css',
+      'outline',
+      'rgb(255, 255, 255) solid 2px',
     )
   })
 })

@@ -44,7 +44,6 @@ i work mostly in typescript these days, but typings aren't yet available for rea
 
 ```ts
 import * as React from 'react'
-// @ts-ignore
 const { useState, useEffect } = React
 ```
 
