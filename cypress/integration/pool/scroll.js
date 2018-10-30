@@ -2,11 +2,17 @@ const delay = 500
 
 context('Scroll', () => {
   let polyfill
+  let scrollPolyfill
 
   before(() => {
     const polyfillUrl = 'https://unpkg.com/unfetch/dist/unfetch.umd.js'
     cy.request(polyfillUrl).then(response => {
       polyfill = response.body
+    })
+    cy.request(
+      'https://unpkg.com/smoothscroll-polyfill@0.4.3/dist/smoothscroll.js',
+    ).then(response => {
+      scrollPolyfill = response.body
     })
   })
 
@@ -21,6 +27,7 @@ context('Scroll', () => {
         delete win.fetch
         win.eval(polyfill)
         win.fetch = win.unfetch
+        win.eval(scrollPolyfill)
       },
     })
   })
@@ -31,6 +38,7 @@ context('Scroll', () => {
       '{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}',
       { delay },
     )
+    // cy.get('body').trigger('keypress', { which: 38 })
     cy.get('[data-cy=thumbnail-35]').should('be.visible')
   })
 
@@ -39,10 +47,7 @@ context('Scroll', () => {
   })
 
   it('no longer renders thumbnails scrolled out of view', () => {
-    cy.get('body').type(
-      '{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}',
-      { delay },
-    )
+    cy.get('[data-cy=thumbnail-44').scrollIntoView({ duration: delay })
     cy.get('[data-cy=thumbnail-0]').should('not.be.visible')
   })
 })

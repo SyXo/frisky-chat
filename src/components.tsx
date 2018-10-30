@@ -25,6 +25,8 @@ interface ThumbnailProps {
 export const Thumbnail = styled.div`
   width: calc(20% - 2px);
   height: calc(20vh - 2px);
+  visibility: ${(props: ThumbnailProps) =>
+    props.visible ? 'visible' : 'hidden'};
   background-image: ${(props: ThumbnailProps) =>
     props.visible ? 'url("' + props.url + '")' : 'none'};
   background-size: cover;
@@ -40,6 +42,7 @@ interface Pool {
   images: Image[]
   selectedIndex: number
   clickOpenHandler: (index: number) => () => void
+  rangeStart: number
 }
 
 export const PoolView = styled.div`
@@ -55,6 +58,7 @@ export const PoolComponent: React.SFC<Pool> = ({
   images,
   selectedIndex,
   clickOpenHandler,
+  rangeStart,
 }) => (
   <PoolView>
     {images.map(({ src }, i) => (
@@ -62,7 +66,7 @@ export const PoolComponent: React.SFC<Pool> = ({
         key={`${src}-${i}`}
         url={src}
         selected={selectedIndex === i}
-        visible={true}
+        visible={i >= rangeStart && i < rangeStart + 30}
         onClick={clickOpenHandler(i)}
         {...cy(`thumbnail-${i}`)}
       />
@@ -86,8 +90,12 @@ const createKeyHandler = (
   setID,
   setSelectedIndex,
   poolImagesLength = 0,
+  rangeStart = 0,
 ) => evt => {
+  evt.preventDefault()
   let newIndex = selectedIndex
+  const itemHeight = window.innerHeight / 5
+
   switch (evt.which) {
     // right arrow
     case 39: {
@@ -99,14 +107,34 @@ const createKeyHandler = (
       newIndex = selectedIndex - 1
       break
     }
-    // down arrow
+    // up arrow
     case 38: {
       newIndex = selectedIndex - 5
+      const scrollY = Math.max(
+        itemHeight * Math.round(newIndex / 5) - itemHeight * 2,
+        0,
+      )
+      console.log(scrollY)
+      window.scrollTo({
+        top: scrollY,
+        left: 0,
+        behavior: 'smooth',
+      })
       break
     }
-    // up arrow
+    // down arrow
     case 40: {
       newIndex = selectedIndex + 5
+      const scrollY = Math.max(
+        itemHeight * Math.round(newIndex / 5) - itemHeight * 2,
+        0,
+      )
+      console.log(scrollY)
+      window.scrollTo({
+        top: scrollY,
+        left: 0,
+        behavior: 'smooth',
+      })
       break
     }
     // spacebar
@@ -136,6 +164,7 @@ export const PoolContainer: React.SFC<RouteProps> = ({
   const [loaded, setLoaded] = useState(true)
   const [poolImages, setPoolImages] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(parseInt(id))
+  const [rangeStart, setRangeStart] = useState(0)
 
   useEffect(
     async () => {
@@ -157,10 +186,26 @@ export const PoolContainer: React.SFC<RouteProps> = ({
         setID,
         setSelectedIndex,
         poolImages.length,
+        rangeStart,
       )
       window.addEventListener('keydown', keyHandler)
       return () => {
         window.removeEventListener('keydown', keyHandler)
+      }
+    },
+    [loaded, selectedIndex],
+  )
+
+  useEffect(
+    () => {
+      const scrollHandler = () => {
+        const itemHeight = window.innerHeight / 5
+        const start = Math.floor(window.scrollY / itemHeight) * 5
+        setRangeStart(start)
+      }
+      window.addEventListener('scroll', scrollHandler)
+      return () => {
+        window.removeEventListener('scroll', scrollHandler)
       }
     },
     [loaded, selectedIndex],
@@ -177,6 +222,7 @@ export const PoolContainer: React.SFC<RouteProps> = ({
       images={poolImages}
       selectedIndex={selectedIndex}
       clickOpenHandler={clickOpenHandler}
+      rangeStart={rangeStart}
     />
   )
 }
