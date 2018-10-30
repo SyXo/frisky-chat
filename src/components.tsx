@@ -137,12 +137,15 @@ const createKeyHandler = (
       })
       break
     }
+    // escape key
+    case 27:
     // spacebar
     case 32: {
       route === 'image' ? setRoute('pool') : setRoute('image')
-      setID(selectedIndex.toString())
+      break
     }
   }
+
   if (newIndex < 0) {
     newIndex += poolImagesLength
   } else if (newIndex >= poolImagesLength) {
