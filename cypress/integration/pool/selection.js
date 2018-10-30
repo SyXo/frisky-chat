@@ -1,4 +1,4 @@
-const delay = 250
+const delay = 500
 
 context('Selection', () => {
   let polyfill

@@ -2,6 +2,10 @@ import * as React from 'react'
 const { useState, useEffect, useRef } = React
 import styled, { css, createGlobalStyle } from 'styled-components'
 
+const dev = (window as any).Cypress && (window as any).Cypress.env().DEV
+
+export const cy = name => (dev ? { 'data-cy': name } : {})
+
 export const GlobalStyle = createGlobalStyle`
   html, body {
     background-color: black;
@@ -55,11 +59,12 @@ export const PoolComponent: React.SFC<Pool> = ({
   <PoolView>
     {images.map(({ src }, i) => (
       <Thumbnail
-        key={src}
+        key={`${src}-${i}`}
         url={src}
         selected={selectedIndex === i}
         visible={true}
         onClick={clickOpenHandler(i)}
+        {...cy(`thumbnail-${i}`)}
       />
     ))}
   </PoolView>
