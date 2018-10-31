@@ -1,0 +1,103 @@
+# Frisky Chat suggested top-level tags
+
+- sexuality
+  - solo (nsfw)
+  - straight
+  - gay
+  - lesbian
+  - trans
+  - bisexual
+  - clean (sfw)
+- breast size
+  - none
+  - A-C
+  - D+
+- cock size
+  - none
+  - average (<6")
+  - large (6-10")
+  - massive (10"+)
+  - hyper
+  - micro
+  - flaccid
+  - erect
+  - foreskin
+    - none (cut)
+    - average (uncut)
+    - lengthy (uncut)
+  - pumped
+- pussy
+  - none
+  - small
+  - average
+  - large
+  - massive
+  - pumped
+- balls
+  - none
+  - small
+  - average
+  - large
+  - massive
+  - pumped
+  - stretched
+- ass
+  - small
+  - average
+  - large
+  - massive
+- body
+  - skinny
+  - muscled
+  - large
+  - short
+  - tall
+- community
+  - human (porn)
+  - anime (hentai)
+  - furry (yiff)
+  - pony (clop)
+  - fandom (rule 34)
+- fetish
+  - oral
+  - anal
+  - vaginal
+  - orgy
+  - frotting
+  - autofellatio
+  - bdsm
+    - cbt
+    - bondage
+- rope
+  - dom
+    - average
+    - small
+    - large
+    - male
+    - female
+    - trans
+  - sub
+    - average
+    - small
+    - large
+    - male
+    - female
+    - trans
+  - wax
+  - cum
+    - average
+    - massive
+    - pre
+    - mouth
+    - face
+    - ass
+    - pussy
+    - body
+    - milked
+  - breast milk
+  - squirting
+  - size difference
+  - tentacle
+- credit
+- community tags
+  - etc

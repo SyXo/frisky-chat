@@ -2,10 +2,12 @@
 
 ## features
 
+- [ ] electron app
+- [ ] distributed database
 - [x] pool view
   - [x] keyboard selection
   - [x] mouse selection
-  - [ ] infinite scroll
+  - [x] infinite scroll
 - [x] fullscreen view
 - [ ] pool upload
 - [ ] tagging
