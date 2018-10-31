@@ -9,6 +9,8 @@
     "jsx": "react",
     "importHelpers": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
-  }
+    "experimentalDecorators": true,
+    "types": ["react", "react-dom", "styled-components"]
+  },
+  "exclude": ["node_modules"]
 }

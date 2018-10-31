@@ -1,0 +1,18 @@
+directories:
+  output: dist
+  buildResources: build
+extraMetadata:
+  main: out/main.js
+files:
+  - node_modules
+  - out
+extraResources:
+  - from: static
+    to: static
+asar: true
+appId: frisky.chat
+productName: friskychat
+linux:
+  target:
+    - AppImage
+extends: electron-webpack/electron-builder.yml
