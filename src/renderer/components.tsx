@@ -1,6 +1,7 @@
 import * as React from 'react'
 const { useState, useEffect, useRef } = React
 import styled, { css, createGlobalStyle } from 'styled-components'
+import { ipcRenderer } from 'electron'
 
 const dev = (window as any).Cypress && (window as any).Cypress.env().DEV
 
@@ -43,12 +44,13 @@ interface Pool {
   selectedIndex: number
   clickOpenHandler: (index: number) => () => void
   rangeStart: number
+  dragHandler: React.DragEventHandler
 }
 
 export const PoolView = styled.div`
   display: flex;
-  width: 90vw;
-  height: 100vh;
+  width: 100vw;
+  height: 100vh; // TODO navbar
   flex-direction: row;
   flex-wrap: wrap;
   align-content: flex-start;
@@ -59,8 +61,9 @@ export const PoolComponent: React.SFC<Pool> = ({
   selectedIndex,
   clickOpenHandler,
   rangeStart,
+  dragHandler,
 }) => (
-  <PoolView>
+  <PoolView onDragStart={dragHandler}>
     {images.map(({ src }, i) => (
       <Thumbnail
         key={`${src}-${i}`}
@@ -214,10 +217,16 @@ export const PoolContainer: React.SFC<RouteProps> = ({
     [loaded, selectedIndex],
   )
 
-  const clickOpenHandler = index => () => {
+  const clickOpenHandler = (index: number) => () => {
     setSelectedIndex(index)
     setID(index.toString())
     setRoute('image')
+  }
+
+  const dragHandler = (evt: React.DragEvent) => {
+    evt.preventDefault()
+    console.log(evt.dataTransfer.files)
+    ipcRenderer.send('ondragstart', evt.dataTransfer.files)
   }
 
   return (
@@ -226,6 +235,7 @@ export const PoolContainer: React.SFC<RouteProps> = ({
       selectedIndex={selectedIndex}
       clickOpenHandler={clickOpenHandler}
       rangeStart={rangeStart}
+      dragHandler={dragHandler}
     />
   )
 }
