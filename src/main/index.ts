@@ -1,24 +1,39 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import * as fs from 'fs'
 import * as path from 'path'
+import { app, BrowserWindow, ipcMain, protocol } from 'electron'
+
+import * as model from './model'
 
 require('electron-debug')({
   enabled: true,
   devToolsMode: 'right',
 })
 
-declare var __dirname: string
+// declare var __dirname: string
 let mainWindow: Electron.BrowserWindow
 
-const friskyPath = path.resolve(app.getPath('pictures'), 'frisky')
+const friskyPath: string = path.resolve(app.getPath('pictures'), 'frisky_data')
 
-const onReady = () => {
+const onReady = async () => {
   mainWindow = new BrowserWindow({
     frame: false,
     show: false,
     webPreferences: {
       devTools: true,
+      webSecurity: false, // TODO fix
     },
   })
+
+  protocol.registerFileProtocol(
+    'frisky-pool',
+    (request, callback) => {
+      const url = request.url.substr('frisky-pool://'.length)
+      callback(`${friskyPath}/pool/${url}`)
+    },
+    error => {
+      if (error) console.error('Failed to register frisky-pool:// protocol')
+    },
+  )
 
   mainWindow.maximize()
   mainWindow.show()
@@ -26,8 +41,6 @@ const onReady = () => {
   const fileName = `file://${app.getAppPath()}/out/index.html`
   mainWindow.loadURL(fileName)
   mainWindow.on('close', () => app.quit())
-
-  console.log(friskyPath)
 }
 
 ipcMain.on('ondragstart', (event, filePaths: string[]) => {
@@ -38,6 +51,17 @@ ipcMain.on('ondragstart', (event, filePaths: string[]) => {
   })
 })
 
-app.on('ready', () => onReady())
+ipcMain.on('fetch-pool-images', async event => {
+  fs.readdir(path.resolve(friskyPath, 'pool'), (err, imagePaths = []) => {
+    event.sender.send('fetched-pool-images', imagePaths)
+  })
+})
+
+ipcMain.on('save-images', async (event, imagePaths) => {
+  const count = await model.saveImages(friskyPath, imagePaths, event.sender)
+  event.sender.send('save-images-finished', count)
+})
+
+app.on('ready', onReady)
 app.on('window-all-closed', () => app.quit())
 console.log(`frisky.chat version ${app.getVersion()}`)

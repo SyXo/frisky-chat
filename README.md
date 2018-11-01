@@ -9,11 +9,11 @@
   - [x] mouse selection
   - [x] infinite scroll
 - [x] fullscreen view
-- [ ] pool upload
-  - [ ] phash
-  - [ ] strip metadata
-  - [ ] add hash to db
-  - [ ] local `indexed.db`
+- [x] pool upload
+  - [x] phash
+  - [x] strip metadata
+  - [x] add hash to db
+  - [x] local `indexed.db`
   - [ ] drag and drop
 - [ ] tagging
   - [ ] add tag

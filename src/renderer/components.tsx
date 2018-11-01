@@ -2,6 +2,7 @@ import * as React from 'react'
 const { useState, useEffect, useRef } = React
 import styled, { css, createGlobalStyle } from 'styled-components'
 import { ipcRenderer } from 'electron'
+import { mapFilesList } from './helpers'
 
 const dev = (window as any).Cypress && (window as any).Cypress.env().DEV
 
@@ -35,12 +36,16 @@ export const Thumbnail = styled.div`
     props.selected ? 'outline: 2px solid white;' : ''} margin: 1px;
 `
 
-interface Image {
-  src: string
-}
+export const PoolNav = styled.div`
+  flex-direction: row;
+`
+
+export const PoolNavLink = styled.a`
+  color: white;
+`
 
 interface Pool {
-  images: Image[]
+  images: string[]
   selectedIndex: number
   clickOpenHandler: (index: number) => () => void
   rangeStart: number
@@ -64,9 +69,9 @@ export const PoolComponent: React.SFC<Pool> = ({
   dragHandler,
 }) => (
   <PoolView onDragStart={dragHandler}>
-    {images.map(({ src }, i) => (
+    {images.map((src, i) => (
       <Thumbnail
-        key={`${src}-${i}`}
+        key={`${src.split('://')[1]}-${i}`}
         url={src}
         selected={selectedIndex === i}
         visible={i >= rangeStart && i < rangeStart + 30}
@@ -117,7 +122,6 @@ const createKeyHandler = (
         itemHeight * Math.round(newIndex / 5) - itemHeight * 2,
         0,
       )
-      console.log(scrollY)
       window.scrollTo({
         top: scrollY,
         left: 0,
@@ -132,7 +136,6 @@ const createKeyHandler = (
         itemHeight * Math.round(newIndex / 5) - itemHeight * 2,
         0,
       )
-      console.log(scrollY)
       window.scrollTo({
         top: scrollY,
         left: 0,
@@ -171,13 +174,15 @@ export const PoolContainer: React.SFC<RouteProps> = ({
   const [poolImages, setPoolImages] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(parseInt(id))
   const [rangeStart, setRangeStart] = useState(0)
+  const [upload, setUpload] = useState('upload!')
 
   useEffect(
     async () => {
-      const res = await fetch('/pool')
-      const { images = [] } = await res.json()
-      setPoolImages(images)
-      setImagesLength(images.length)
+      ipcRenderer.send('fetch-pool-images')
+      ipcRenderer.on('fetched-pool-images', (event, imagePaths) => {
+        setPoolImages(imagePaths.map(path => `frisky-pool://${path}`))
+        setImagesLength(imagePaths.length)
+      })
       setLoaded(true)
     },
     [loaded],
@@ -229,14 +234,56 @@ export const PoolContainer: React.SFC<RouteProps> = ({
     ipcRenderer.send('ondragstart', evt.dataTransfer.files)
   }
 
+  const uploadHandler = () => {
+    const input = document.createElement('input')
+    input.setAttribute('type', 'file')
+    input.setAttribute('multiple', 'true')
+    input.setAttribute('accept', 'image/*')
+    input.addEventListener('change', (evt: Event) => {
+      ipcRenderer.send(
+        'save-images',
+        mapFilesList((evt.target as HTMLInputElement).files, 'path'),
+      )
+    })
+    input.click()
+  }
+
+  useEffect(
+    () => {
+      ipcRenderer.on(
+        'save-images-progress',
+        (evt, progress: number, total: number) => {
+          setUpload(`uploading ${progress} of ${total}...`)
+          ipcRenderer.send('fetch-pool-images')
+        },
+      )
+    },
+    [loaded],
+  )
+
+  useEffect(
+    () => {
+      ipcRenderer.on('save-images-finished', (evt, count: number) => {
+        setUpload(`uploaded ${count} images.`)
+        ipcRenderer.send('fetch-pool-images')
+      })
+    },
+    [loaded],
+  )
+
   return (
-    <PoolComponent
-      images={poolImages}
-      selectedIndex={selectedIndex}
-      clickOpenHandler={clickOpenHandler}
-      rangeStart={rangeStart}
-      dragHandler={dragHandler}
-    />
+    <>
+      <PoolNav>
+        <PoolNavLink onClick={uploadHandler}>{upload}</PoolNavLink>
+      </PoolNav>
+      <PoolComponent
+        images={poolImages}
+        selectedIndex={selectedIndex}
+        clickOpenHandler={clickOpenHandler}
+        rangeStart={rangeStart}
+        dragHandler={dragHandler}
+      />
+    </>
   )
 }
 
