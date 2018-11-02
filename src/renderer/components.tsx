@@ -54,7 +54,7 @@ interface Pool {
 
 export const PoolView = styled.div`
   display: flex;
-  width: 100vw;
+  width: 100%;
   height: 100vh; // TODO navbar
   flex-direction: row;
   flex-wrap: wrap;
@@ -89,6 +89,8 @@ interface RouteProps {
   setID: (id: string) => void
   imagesLength: number
   setImagesLength: (length: number) => void
+  poolImages: string[]
+  setPoolImages: (images: string[]) => void
 }
 
 const createKeyHandler = (
@@ -169,9 +171,10 @@ export const PoolContainer: React.SFC<RouteProps> = ({
   id,
   setID,
   setImagesLength,
+  poolImages,
+  setPoolImages,
 }) => {
   const [loaded, setLoaded] = useState(true)
-  const [poolImages, setPoolImages] = useState([])
   const [selectedIndex, setSelectedIndex] = useState(parseInt(id))
   const [rangeStart, setRangeStart] = useState(0)
   const [upload, setUpload] = useState('upload!')
@@ -209,6 +212,24 @@ export const PoolContainer: React.SFC<RouteProps> = ({
 
   useEffect(
     () => {
+      if (route === 'pool') {
+        const itemHeight = window.innerHeight / 5
+        const scrollY = Math.max(
+          itemHeight * Math.round(selectedIndex / 5) - itemHeight * 2,
+          0,
+        )
+        window.scrollTo({
+          top: scrollY,
+          left: 0,
+          behavior: 'instant',
+        })
+      }
+    },
+    [route],
+  )
+
+  useEffect(
+    () => {
       const scrollHandler = () => {
         const itemHeight = window.innerHeight / 5
         const start = Math.floor(window.scrollY / itemHeight) * 5
@@ -234,17 +255,20 @@ export const PoolContainer: React.SFC<RouteProps> = ({
     ipcRenderer.send('ondragstart', evt.dataTransfer.files)
   }
 
+  const saveImagesHandler = (evt: Event) => {
+    ipcRenderer.send(
+      'save-images',
+      mapFilesList((evt.target as HTMLInputElement).files, 'path'),
+    )
+  }
+
   const uploadHandler = () => {
     const input = document.createElement('input')
     input.setAttribute('type', 'file')
     input.setAttribute('multiple', 'true')
     input.setAttribute('accept', 'image/*')
-    input.addEventListener('change', (evt: Event) => {
-      ipcRenderer.send(
-        'save-images',
-        mapFilesList((evt.target as HTMLInputElement).files, 'path'),
-      )
-    })
+    input.removeEventListener('change', saveImagesHandler)
+    input.addEventListener('change', saveImagesHandler)
     input.click()
   }
 
@@ -308,6 +332,7 @@ export const ImageContainer: React.SFC<ImageContainerProps & RouteProps> = ({
   id,
   setID,
   imagesLength,
+  poolImages,
 }) => {
   const ID = parseInt(id)
   const [selectedIndex, setSelectedIndex] = useState(ID)
@@ -334,7 +359,7 @@ export const ImageContainer: React.SFC<ImageContainerProps & RouteProps> = ({
   return (
     <FullscreenImage
       onClick={clickCloseHandler}
-      url={`cypress/fixtures/images/${id}.jpg`}
+      url={poolImages[selectedIndex]}
     />
   )
 }

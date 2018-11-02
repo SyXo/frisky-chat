@@ -7,9 +7,9 @@ import * as model from './model'
 require('electron-debug')({
   enabled: true,
   devToolsMode: 'right',
+  showDevTools: false,
 })
 
-// declare var __dirname: string
 let mainWindow: Electron.BrowserWindow
 
 const friskyPath: string = path.resolve(app.getPath('pictures'), 'frisky_data')
@@ -20,7 +20,6 @@ const onReady = async () => {
     show: false,
     webPreferences: {
       devTools: true,
-      webSecurity: false, // TODO fix
     },
   })
 

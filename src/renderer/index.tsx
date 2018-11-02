@@ -10,22 +10,22 @@ import {
   ImageContainer,
 } from './components'
 
-document.addEventListener('keydown', function(e) {
-  if (e.which === 123) {
-    require('remote')
-      .getCurrentWindow()
-      .toggleDevTools()
-  } else if (e.which === 116) {
-    location.reload()
-  }
-})
-
 const Router: React.SFC<{}> = () => {
   const [route, setRoute] = useState('pool')
   const [id, setID] = useState('0')
   const [imagesLength, setImagesLength] = useState(0)
+  const [poolImages, setPoolImages] = useState([])
 
-  const routing = { route, setRoute, id, setID, imagesLength, setImagesLength }
+  const routing = {
+    route,
+    setRoute,
+    id,
+    setID,
+    poolImages,
+    setPoolImages,
+    imagesLength,
+    setImagesLength,
+  }
 
   switch (route) {
     case 'pool':

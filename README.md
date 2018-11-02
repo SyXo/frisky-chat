@@ -14,6 +14,7 @@
   - [x] strip metadata
   - [x] add hash to db
   - [x] local `indexed.db`
+  - [ ] remove local image
   - [ ] drag and drop
 - [ ] tagging
   - [ ] add tag
