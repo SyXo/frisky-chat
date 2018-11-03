@@ -6,13 +6,23 @@ extraMetadata:
 files:
   - node_modules
   - out
+  - build
 extraResources:
   - from: static
     to: static
 asar: true
-appId: frisky.chat
+appId: com.furrio.friskychat
 productName: friskychat
+# icon: build/icon.large.png
 linux:
+  # icon: build/icon.png
   target:
     - AppImage
+win:
+  target:
+    - nsis
+mac:
+  target:
+    - dmg
+
 extends: electron-webpack/electron-builder.yml

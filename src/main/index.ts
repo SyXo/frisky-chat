@@ -18,6 +18,9 @@ const onReady = async () => {
   mainWindow = new BrowserWindow({
     frame: false,
     show: false,
+    icon: `${__dirname}/build/icon.${
+      process.platform == 'linux' ? 'small' : 'large'
+    }.png`,
     webPreferences: {
       devTools: true,
     },

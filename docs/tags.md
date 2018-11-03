@@ -99,5 +99,10 @@
   - size difference
   - tentacle
 - credit
+  - copyright
+  - sources
+- year
 - community tags
+  - furry
+    - species
   - etc
