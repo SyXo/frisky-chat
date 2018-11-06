@@ -16,6 +16,9 @@ const config = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
+  externals: {
+    sharp: 'sharp',
+  },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'out'),
