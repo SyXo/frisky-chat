@@ -24,20 +24,20 @@ const config = {
 
 module.exports = [
   {
-    ...{
-      target: 'electron-main',
-      entry: { main: './src/main/index.ts' },
+    target: 'electron-main',
+    entry: { main: './src/main/index.ts' },
+    externals: {
+      sharp: 'commonjs sharp',
     },
     ...config,
   },
   {
-    ...{
-      target: 'electron-renderer',
-      entry: { renderer: './src/renderer/index.tsx' },
-      plugins: [
-        new HtmlWebpackPlugin({
-          title: 'frisky.chat',
-          templateContent: `
+    target: 'electron-renderer',
+    entry: { renderer: './src/renderer/index.tsx' },
+    plugins: [
+      new HtmlWebpackPlugin({
+        title: 'frisky.chat',
+        templateContent: `
             <!DOCTYPE html>
             <html lang="en">
             <head>
@@ -50,13 +50,12 @@ module.exports = [
             </body>
             </html>
           `,
-        }),
-        new LiveReloadPlugin({
-          port: 35729,
-          appendScriptTag: true,
-        }),
-      ],
-    },
+      }),
+      new LiveReloadPlugin({
+        port: 35729,
+        appendScriptTag: true,
+      }),
+    ],
     ...config,
   },
 ]

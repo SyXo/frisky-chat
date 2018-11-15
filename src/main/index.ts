@@ -1,4 +1,4 @@
-import * as fs from 'fs'
+import { promises as fs } from 'fs'
 import * as path from 'path'
 import { app, BrowserWindow, ipcMain, protocol } from 'electron'
 
@@ -37,6 +37,13 @@ const onReady = async () => {
     },
   )
 
+  try {
+    await fs.mkdir(path.resolve(friskyPath), { recursive: true })
+    await fs.mkdir(path.resolve(friskyPath, 'pool'), { recursive: true })
+  } catch (err) {
+    console.log(err)
+  }
+
   mainWindow.maximize()
   mainWindow.show()
 
@@ -54,9 +61,8 @@ ipcMain.on('ondragstart', (event, filePaths: string[]) => {
 })
 
 ipcMain.on('fetch-pool-images', async event => {
-  fs.readdir(path.resolve(friskyPath, 'pool'), (err, imagePaths = []) => {
-    event.sender.send('fetched-pool-images', imagePaths)
-  })
+  const imagePaths = await fs.readdir(path.resolve(friskyPath, 'pool'))
+  event.sender.send('fetched-pool-images', imagePaths)
 })
 
 ipcMain.on('save-images', async (event, imagePaths) => {
